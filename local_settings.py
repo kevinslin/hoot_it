@@ -11,7 +11,7 @@ if socket.gethostname() == 'Maxwell.local':
 
 # Internationalization
 LANGUAGE_CODE = 'en'
-LANGUAGES = [('en', 'English'), ('de', 'German')]
+LANGUAGES = [('en', 'English')]
 
 # Debug Toolbar
 INTERNAL_IPS = ('127.0.0.1',)

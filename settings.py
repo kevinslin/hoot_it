@@ -25,7 +25,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.core.context_processors.media',
     'django.core.context_processors.static',
+    # Optional
     'sekizai.context_processors.sekizai',
+    'navbar.context_processors.navbars',
+
 )
 
 TIME_ZONE = 'America/Chicago'
@@ -96,6 +99,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Extra
+    'django.contrib.flatpages',
     'django.contrib.admin',
     'django.contrib.admindocs',
     # View
@@ -103,9 +107,12 @@ INSTALLED_APPS = (
 
     # Inital
     'bond',
-    'django.contrib.flatpages',
+    'main',
 
-    #development
+    # Optional
+    'navbar',
+
+    #Development
     'south',
     'django_extensions',
     'debug_toolbar',

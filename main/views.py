@@ -12,3 +12,10 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     return render_to_response("main/index.html", {},
                     context_instance = RequestContext(request))
+
+def example(request):
+    """
+    Demonstration of various django commands
+    """
+    return render_to_response("main/example.html", {},
+                    context_instance = RequestContext(request))

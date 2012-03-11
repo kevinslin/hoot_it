@@ -3,38 +3,49 @@ from django.contrib.auth.models import User
 import datetime
 
 from userena.models import UserenaBaseProfile
-CHOICES_GENDER = (
-    (1, 'Male'),
-    (2, 'Female'),
-)
 
+class Question(models.Model):
+    def __unicode__(self):
+        return self.name
+    name = models.CharField(max_length=100)
+    details = models.TextField()
+
+class ProblemSet(models.Model):
+    """
+    A problem set
+    """
+    def __unicode__(self):
+        return self.name
+    name = models.CharField(max_length=100)
+    question = models.ForeignKey(Question)
+
+class Course(models.Model):
+    """
+    A course
+    """
+    def __unicode__(self):
+        return self.name
+
+    name = models.CharField(max_length=100)
+    course_id = models.IntegerField()
+    problem_set = models.ForeignKey(ProblemSet)
 
 class UserProfile(UserenaBaseProfile):
     user = models.OneToOneField(User, unique=True)
-    favourite_snack = models.CharField('favourite snack', max_length=5)
+    course = models.ForeignKey(Course, null = True, blank = False)
 
-#class UserProfile(models.Model):
-    #"""
-    #User Profile. User can be an athlete or a coach.
-    #"""
-    #def __unicode__(self):
-        #return self.user.username
-
-    #user = models.OneToOneField(User)
-    #gender = models.PositiveSmallIntegerField('gender',
-            #choices=CHOICES_GENDER, blank=True,
-            #null = True)
-    #birthday = models.DateField(
-            #default=datetime.datetime.utcfromtimestamp(83850))
-    #pic = models.ImageField(upload_to='img/profile', blank=True)
+class QuestionStats(models.Model):
+    rating = models.IntegerField()
+    start_time = models.DateTimeField()
+    stop_time = models.DateTimeField()
+    question = models.ForeignKey(Question)
+    profile = models.ForeignKey(UserProfile)
 
 
-    #@property
-    #def age(self):
-        #today = datetime.date.today()
-        #if self.birthday:
-            ##FIXME: hack, not accurate
-            #return "%s" % str(
-                    #(today - self.birthday).days / 365
-                    #)
+
+
+
+
+
+
 

@@ -83,6 +83,7 @@ def setup():
     Setup after wipe
     """
     local("python manage.py check_permissions")
+    migrate()
 
 
 

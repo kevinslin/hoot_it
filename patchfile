@@ -1,0 +1,302 @@
+diff --git data.sql data.sql
+index 80dd0af..0fa93a8 100644
+Binary files data.sql and data.sql differ
+diff --git fabfile.py fabfile.py
+index 6858775..e2c5c6f 100644
+--- fabfile.py
++++ fabfile.py
+@@ -83,6 +83,7 @@ def setup():
+     Setup after wipe
+     """
+     local("python manage.py check_permissions")
++    migrate()
+ 
+ 
+ 
+diff --git main/admin.py main/admin.py
+index 56d1f25..45c37ef 100644
+--- main/admin.py
++++ main/admin.py
+@@ -4,5 +4,38 @@ from django.contrib import admin
+ class ProfileAdmin(admin.ModelAdmin):
+     pass
+ 
++##class WorkoutInline(admin.StackedInline):
++    ###list_display('name', 'metric')
++    ##model = WorkoutInstance
++    ##extra = 3
++
++#class ProfileAdmin(admin.ModelAdmin):
++    #pass
++    ##fieldsets = [
++        ##(None, {'fields':['event']}),
++        ##('Birthday', {'fields':['birthday'], 'classes':['collapse']}),
++    ##]
++
++#class CycleAdmin(admin.ModelAdmin):
++    #list_display = ("name", "date_start", "date_stop", "date_diff")
++
++#class MicroCycleAdmin(CycleAdmin):
++    #pass
++#class MesoCycleAdmin(CycleAdmin):
++    #pass
++#class MacroCycleAdmin(CycleAdmin):
++    #pass
++#class WorkoutAdmin(admin.ModelAdmin):
++    #list_display = ('name', 'metric')
++#class WorkoutInstanceAdmin(admin.ModelAdmin):
++    #list_display = ("workout", "date_start", "date_stop", 'value_unit', 'ordering')
++
++
++
+ 
+ #admin.site.register(UserProfile, ProfileAdmin)
++admin.site.register(Course)
++admin.site.register(ProblemSet)
++admin.site.register(Question)
++admin.site.register(QuestionStats)
++
+diff --git main/migrations/0001_initial.py main/migrations/0001_initial.py
+new file mode 100644
+index 0000000..77e1711
+--- /dev/null
++++ main/migrations/0001_initial.py
+@@ -0,0 +1,151 @@
++# encoding: utf-8
++import datetime
++from south.db import db
++from south.v2 import SchemaMigration
++from django.db import models
++
++class Migration(SchemaMigration):
++
++    def forwards(self, orm):
++        
++        # Adding model 'Question'
++        db.create_table('main_question', (
++            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
++            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
++            ('details', self.gf('django.db.models.fields.TextField')()),
++        ))
++        db.send_create_signal('main', ['Question'])
++
++        # Adding model 'ProblemSet'
++        db.create_table('main_problemset', (
++            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
++            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
++            ('question', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['main.Question'])),
++        ))
++        db.send_create_signal('main', ['ProblemSet'])
++
++        # Adding model 'Course'
++        db.create_table('main_course', (
++            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
++            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
++            ('course_id', self.gf('django.db.models.fields.IntegerField')()),
++            ('problem_set', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['main.ProblemSet'])),
++        ))
++        db.send_create_signal('main', ['Course'])
++
++        # Adding model 'UserProfile'
++        db.create_table('main_userprofile', (
++            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
++            ('mugshot', self.gf('django.db.models.fields.files.ImageField')(max_length=100, blank=True)),
++            ('privacy', self.gf('django.db.models.fields.CharField')(default='open', max_length=15)),
++            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True)),
++            ('course', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['main.Course'], null=True)),
++        ))
++        db.send_create_signal('main', ['UserProfile'])
++
++        # Adding model 'QustionStats'
++        db.create_table('main_qustionstats', (
++            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
++            ('rating', self.gf('django.db.models.fields.IntegerField')()),
++            ('start_time', self.gf('django.db.models.fields.DateTimeField')()),
++            ('stop_time', self.gf('django.db.models.fields.DateTimeField')()),
++            ('question', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['main.Question'])),
++            ('profile', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['main.UserProfile'])),
++        ))
++        db.send_create_signal('main', ['QustionStats'])
++
++
++    def backwards(self, orm):
++        
++        # Deleting model 'Question'
++        db.delete_table('main_question')
++
++        # Deleting model 'ProblemSet'
++        db.delete_table('main_problemset')
++
++        # Deleting model 'Course'
++        db.delete_table('main_course')
++
++        # Deleting model 'UserProfile'
++        db.delete_table('main_userprofile')
++
++        # Deleting model 'QustionStats'
++        db.delete_table('main_qustionstats')
++
++
++    models = {
++        'auth.group': {
++            'Meta': {'object_name': 'Group'},
++            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
++            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
++            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
++        },
++        'auth.permission': {
++            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
++            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
++            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
++            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
++            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
++        },
++        'auth.user': {
++            'Meta': {'object_name': 'User'},
++            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
++            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
++            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
++            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
++            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
++            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
++            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
++            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
++            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
++            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
++            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
++            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
++            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
++        },
++        'contenttypes.contenttype': {
++            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
++            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
++            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
++            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
++            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
++        },
++        'main.course': {
++            'Meta': {'object_name': 'Course'},
++            'course_id': ('django.db.models.fields.IntegerField', [], {}),
++            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
++            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
++            'problem_set': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['main.ProblemSet']"})
++        },
++        'main.problemset': {
++            'Meta': {'object_name': 'ProblemSet'},
++            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
++            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
++            'question': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['main.Question']"})
++        },
++        'main.question': {
++            'Meta': {'object_name': 'Question'},
++            'details': ('django.db.models.fields.TextField', [], {}),
++            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
++            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
++        },
++        'main.qustionstats': {
++            'Meta': {'object_name': 'QustionStats'},
++            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
++            'profile': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['main.UserProfile']"}),
++            'question': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['main.Question']"}),
++            'rating': ('django.db.models.fields.IntegerField', [], {}),
++            'start_time': ('django.db.models.fields.DateTimeField', [], {}),
++            'stop_time': ('django.db.models.fields.DateTimeField', [], {})
++        },
++        'main.userprofile': {
++            'Meta': {'object_name': 'UserProfile'},
++            'course': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['main.Course']", 'null': 'True'}),
++            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
++            'mugshot': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
++            'privacy': ('django.db.models.fields.CharField', [], {'default': "'open'", 'max_length': '15'}),
++            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True'})
++        }
++    }
++
++    complete_apps = ['main']
+diff --git main/migrations/__init__.py main/migrations/__init__.py
+new file mode 100644
+index 0000000..e69de29
+diff --git main/models.py main/models.py
+index 2ea158a..89651dc 100755
+--- main/models.py
++++ main/models.py
+@@ -3,38 +3,49 @@ from django.contrib.auth.models import User
+ import datetime
+ 
+ from userena.models import UserenaBaseProfile
+-CHOICES_GENDER = (
+-    (1, 'Male'),
+-    (2, 'Female'),
+-)
+ 
++class Question(models.Model):
++    def __unicode__(self):
++        return self.name
++    name = models.CharField(max_length=100)
++    details = models.TextField()
++
++class ProblemSet(models.Model):
++    """
++    A problem set
++    """
++    def __unicode__(self):
++        return self.name
++    name = models.CharField(max_length=100)
++    question = models.ForeignKey(Question)
++
++class Course(models.Model):
++    """
++    A course
++    """
++    def __unicode__(self):
++        return self.name
++
++    name = models.CharField(max_length=100)
++    course_id = models.IntegerField()
++    problem_set = models.ForeignKey(ProblemSet)
+ 
+ class UserProfile(UserenaBaseProfile):
+     user = models.OneToOneField(User, unique=True)
+-    favourite_snack = models.CharField('favourite snack', max_length=5)
+-
+-#class UserProfile(models.Model):
+-    #"""
+-    #User Profile. User can be an athlete or a coach.
+-    #"""
+-    #def __unicode__(self):
+-        #return self.user.username
+-
+-    #user = models.OneToOneField(User)
+-    #gender = models.PositiveSmallIntegerField('gender',
+-            #choices=CHOICES_GENDER, blank=True,
+-            #null = True)
+-    #birthday = models.DateField(
+-            #default=datetime.datetime.utcfromtimestamp(83850))
+-    #pic = models.ImageField(upload_to='img/profile', blank=True)
+-
+-
+-    #@property
+-    #def age(self):
+-        #today = datetime.date.today()
+-        #if self.birthday:
+-            ##FIXME: hack, not accurate
+-            #return "%s" % str(
+-                    #(today - self.birthday).days / 365
+-                    #)
++    course = models.ForeignKey(Course, null = True, blank = False)
++
++class QuestionStats(models.Model):
++    rating = models.IntegerField()
++    start_time = models.DateTimeField()
++    stop_time = models.DateTimeField()
++    question = models.ForeignKey(Question)
++    profile = models.ForeignKey(UserProfile)
++
++
++
++
++
++
++
++
+ 

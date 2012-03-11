@@ -111,11 +111,8 @@ INSTALLED_APPS = (
     # Inital
     'bond',
     'main',
-    'simpleapps.accounts',
-    'simpleapps.profiles',
-
-    # Optional
-    'navbar',
+    #'simpleapps.accounts',
+    #'simpleapps.profiles',
 
     #Development
     'south',

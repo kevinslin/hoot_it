@@ -5,6 +5,7 @@ from django.conf import settings
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    url(r'^api/', include('api.urls')),
     url(r'^', include('main.urls')),
     url(r'^pset', include('main.urls')),
     url(r'^bond', include('bond.urls')),

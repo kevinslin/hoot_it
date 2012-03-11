@@ -49,21 +49,27 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.rating.js"></script>
 
 <script type="text/javascript">
-    var liftoffTime = new Date();
     $(function(){
-        $('#hoot-timer1').countdown({
-            since: liftoffTime,
-            format: 'HMS'
-            //onTick: showPauseTime
-        });
 
-        $('.btn-hoot-timer1').toggle(function() {
-            $(this).text('Resume');
-            $('#btn-hoot-timer1').countdown('pause');
+        /*
+        $('#countdown-1').countdown({
+            since: new Date(),
+            format: 'HMS'
+        });
+        $("#countdown-1").countdown("pause");
+        */
+
+        $('.btn-countdown-1').toggle(
+            function() {
+                $(this).text('Pause').removeClass("btn");
+                $(this).text('Pause').addClass("btn-inverse");
+                $('#countdown-1').countdown('resume');
             },
             function() {
-                $(this).text('Pause');
-                $('#btn-hoot-timer1').countdown('resume');
+                $(this).text('Start');
+                $(this).removeClass("btn-inverse");
+                $(this).addClass("btn");
+                $('#countdown-1').countdown('pause');
             }
         );
 
@@ -72,51 +78,81 @@
             ':' + twoDigits(periods[6]));
         }
 
-        $( 'body' ).find( '.star-rating' ).each( function(){
-            $(this).click(
-                var star_container = $(this).parent().children();
-                var rating = t1.index( $(this) ); // star rating
-                var url_send_rating = "/api/rating";
-                var question_div = $($(this).parentsUntil("div[id|=question]").parent()[0]);
-                var question_pk = question_div.attr("id").split("-")[1];
-                $.ajax( url_send_rating, {
-                    'async': true,
-                    'data': {
-                        'user': {{ request.user }},
-                        'question': question_pk,
-                        'rating': rating
-                    },
-                    'type':'POST'
-                }).done( function(msg){
-                    alert('update success');
-                }).fail( function(msg){
-                    alert("update fail');
+        $( 'body' ).find( 'div[id|=countdown]' ).each( function(){
+                $(this).countdown({
+                    since: new Date(),
+                    format: 'HMS'
                 });
+                var question_id = $(this).attr("id").split("-")[1];
+                $("#countdown-" + question_id ).countdown("pause");
+        }); // end of each
+
+        $( 'body' ).find( "button[id|=btn-countdown]" ).each( function(){
+                var question_id = $(this).attr("id").split("-")[2];
+                $(this).toggle(
+                    function() {
+                        $(this).text('Pause').removeClass("btn");
+                        $(this).text('Pause').addClass("btn-inverse");
+                        $('#countdown-' + question_id).countdown('resume');
+                    },
+                    function() {
+                        $(this).text('Start');
+                        $(this).removeClass("btn-inverse");
+                        $(this).addClass("btn");
+                        $('#countdown-' + question_id).countdown('pause');
+                    }
+                ) // end of toggle
+        }); //end of each
+
+        /* Click Binders */
+        $( 'body' ).find( '.star-rating' ).each( function(){
+                $(this).click(
                 function(){
-                    alert("bond");
+                    var star_container = $(this).parent().children();
+                    var rating = star_container.index( $(this) ); // star rating
+                    var url_send_rating = "/api/rating/";
+                    var question_div = $($(this).parentsUntil("div[id|=question]").parent()[0]);
+                    var question_pk = question_div.attr("id").split("-")[1];
+                    $.ajax( url_send_rating, {
+                        'async': true,
+                        'data': {
+                            'question': question_pk,
+                            'rating': rating
+                        },
+                        'type':'POST'
+                    }).done( function(msg){
+                        alert('update success');
+                    }).fail( function(msg){
+                        alert("update fail");
+                    });
                 }
-            );
-        });
-        /*
-        var update_rating =
-        $.ajax( url_cycle_create, {
-            'async':false,
-            'data':{
-                'cycle_type': cycle_type.val(),
-                'name': name.val(),
-                'start': start.val(),
-                'stop': stop.val()
-            },
-            'type': 'POST'
-        }).done( function (msg){
-            errors = false;
-            console.log('data saved');
-            //#TODO(prettify)
-        }).fail( function (msg){
-            console.log('query has failed');
-            errors = true;
-        });
-        */
+            ); // end of click
+        }); // end of each
+
+        $( 'body' ).find( 'button[id|=btn-hoot]' ).each( function(){
+                $(this).click(
+                function(){
+                    var time = $(this).countdown("getTimes");
+
+                    var url_send_time= "/api/time/";
+                    var question_pk = $(this).attr("id").split("-")[2];
+
+                    $.ajax( url_send_time, {
+                        'async': true,
+                        'data': {
+                            'question': question_pk,
+                            'duration':time
+                        },
+                        'type':'POST'
+                    }).done( function(msg){
+                        console.log("success");
+                    }).fail( function(msg){
+                        console.log("fail");
+                    });
+                }
+            ); // end of click
+        }); // end of each
+
     });
 </script>
 
@@ -152,33 +188,38 @@
                 <tbody>
                 {% for q in questions %}
                     <tr>
-                            <td>
-                        <h3> {{ forloop.counter }}. {{ q.name }} </h3>
-                        <div class="question_content">
-                            {{ q.details }}
-                        </div>
+                        <td>
+                            <h3> {{ forloop.counter }}. {{ q.name }} </h3>
+                            <div class="question_content">
+                                {{ q.details }}
+                            </div>
                         </td>
 
                         <td>
+                            <div id="question-{{ q.pk }}" class="collapse in">
 
-                        <div id="hoot-timer{{ q.pk }}" class="countdown hasCountdown" style="height:20px;"></div>
-                        <div id="question-{{ q.pk }}" class="collapse in">
-                            <div id="diffmeter">
-
-                                <form>
-                                    <input href="javascript: alert('bond')" name="star1" type="radio" class="star" onclick="send_data()"/>
-                                    <input name="star1" type="radio" class="star"/>
-                                    <input name="star1" type="radio" class="star" checked="checked" />
-                                    <input name="star1" type="radio" class="star"/>
-                                    <input name="star1" type="radio" class="star"/>
-                                    <input type="hidden" name="question-pk" value="{{ q.pk }}" />
-                                </form>
+                                <!-- Countdown -->
+                                <div id="countdown-{{ q.pk }}" class="" style=""></div>
+                                <br/>
+                                <hr>
+                                <!-- Ratings -->
+                                <div id="diffmeter">
+                                    <form>
+                                        <input href="javascript: alert('bond')" name="star1" type="radio" class="star" onclick="send_data()"/>
+                                        <input name="star1" type="radio" class="star"/>
+                                        <input name="star1" type="radio" class="star" checked="checked" />
+                                        <input name="star1" type="radio" class="star"/>
+                                        <input name="star1" type="radio" class="star"/>
+                                        <input type="hidden" name="question-pk" value="{{ q.pk }}" />
+                                    </form>
+                                </div>
+                                <br/>
+                                <hr>
+                                <!-- Buttons -->
+                                <button id="btn-countdown-{{ q.pk }}" class="btn btn-countdown-{{ q.pk }}"> Start </button>
+                                <button id="btn-hoot-{{q.pk}}" class="btb btn-success"> Hoot It! </button>
 
                             </div>
-                            <a class="btn btn-success btn-hoot-timer{{ q.pk }}"> Start </a>
-                            <a class="btn btn-success btn-hoot-it"> Hoot It!</a>
-
-                        </div>
                         </td>
                     </tr>
 

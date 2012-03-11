@@ -23,8 +23,49 @@ def _get_user_for_request(request):
         return None
     return user
 
-class QuestionStatsHandler(BaseHandler):
+class RatingHandler(BaseHandler):
     allowed_methods = ('POST', 'GET', 'PUT', 'DELETE')
+    model = QuestionStats
+
+    def create(self, request):
+        """
+        Create or update rating
+        """
+        attrs = self.flatten_dict(request.POST)
+        question = Question.objects.get(pk = attrs['question'])
+        qstats, is_new  = QuestionStats.objects.get_or_create(question = question, profile = request.user.get_profile())
+        qstats.rating = attrs['rating']
+        qstats.save()
+        return rc.CREATED
+
+class TimerHandler(BaseHandler):
+    allowed_methods = ('POST', 'GET', 'PUT', 'DELETE')
+    model = QuestionStats
+
+    def create(self, request):
+        """
+        Create or update rating
+        """
+        import pdb
+        pdb.set_trace()
+        attrs = self.flatten_dict(request.POST)
+        question = Question.objects.get(pk = attrs['question'])
+        qstats, is_new  = QuestionStats.objects.get_or_create(question = question, profile = request.user.get_profile())
+        duration = attrs['duration']
+        qstats.duration = datetime.time(hour = duration[-3], minute= duration[-2], seconds = duration[-1])
+        qstats.save()
+        return rc.CREATED
+
+
+#class QuestionStats(models.Model):
+    #rating = models.IntegerField()
+    #start_time = models.DateTimeField()
+    #stop_time = models.DateTimeField()
+    #question = models.ForeignKey(Question,null=True,blank=False)
+    #profile = models.ForeignKey(UserProfile,null=True,blank=False)
+
+
+
 
 
 #class WorkoutForm(forms.ModelForm):

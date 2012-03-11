@@ -45,17 +45,10 @@ class UserProfile(UserenaBaseProfile):
     course = models.ManyToManyField(Course, null = True, blank = False)
 
 class QuestionStats(models.Model):
-    rating = models.IntegerField()
-    start_time = models.DateTimeField()
-    stop_time = models.DateTimeField()
+    rating = models.IntegerField(blank=True,null=True)
+    start_time = models.DateTimeField(blank = True, null = True)
+    stop_time = models.DateTimeField(blank=True, null=True)
+    duration = models.DateTimeField(blank=True, null=True)
     question = models.ForeignKey(Question,null=True,blank=False)
     profile = models.ForeignKey(UserProfile,null=True,blank=False)
-
-
-
-
-
-
-
-
 

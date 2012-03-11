@@ -27,7 +27,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     # Optional
     'sekizai.context_processors.sekizai',
-    'navbar.context_processors.navbars',
 
 )
 

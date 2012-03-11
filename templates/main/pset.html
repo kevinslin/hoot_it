@@ -121,9 +121,10 @@
                         },
                         'type':'POST'
                     }).done( function(msg){
-                        alert('update success');
+                        //$("#alert").alert()
+                        //alert('update success');
                     }).fail( function(msg){
-                        alert("update fail");
+                        //$("#alert").alert()
                     });
                 }
             ); // end of click
@@ -145,10 +146,14 @@
                         },
                         'type':'POST'
                     }).done( function(msg){
-                        alert("congrats, hoot complete");
+                        $("#alert").alert()
+                        //alert("congrats, hoot complete");
+                        $(this).addClass("btn-warning");
                         console.log("success");
                     }).fail( function(msg){
-                        alert("congrats, hoot complete");
+                        $("#alert").alert()
+                        //alert("congrats, hoot complete");
+                        $(this).addClass("btn-warning");
                         console.log("fail");
                     });
                 }
@@ -278,3 +283,4 @@
       </div><!--/row-->
     </div><!-- /container -->
 {% endblock %}
+

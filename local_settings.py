@@ -19,7 +19,7 @@ DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS': False}
 
 # Other
 #CUSTOMIZE
-#AUTH_PROFILE_MODULE = 'main.UserProfile'
+AUTH_PROFILE_MODULE = 'main.UserProfile'
 
 LOGGING = {
     'version': 1,
@@ -69,4 +69,18 @@ LOGGING = {
         }
     }
 }
+
+
+#guardian
+ANONYMOUS_USER_ID = -1
+
+LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
+LOGIN_URL = '/accounts/signin/'
+LOGOUT_URL = '/accounts/signout/'
+
+# userena
+EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+USERENA_ACTIVATION_REQUIRED = False
+USERENA_DEFAULT_PRIVACY = 'open'
+
 

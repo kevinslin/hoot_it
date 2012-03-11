@@ -27,7 +27,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     # Optional
     'sekizai.context_processors.sekizai',
-    'navbar.context_processors.navbars',
 
 )
 
@@ -91,6 +90,12 @@ MIDDLEWARE_CLASSES = (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'userena.backends.UserenaAuthenticationBackend',
+    'guardian.backends.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 
 ROOT_URLCONF = 'hoot_it.urls'
 
@@ -111,11 +116,8 @@ INSTALLED_APPS = (
     # Inital
     'bond',
     'main',
-    'simpleapps.accounts',
-    'simpleapps.profiles',
-
-    # Optional
-    'navbar',
+    'guardian',
+    'userena',
 
     #Development
     'south',

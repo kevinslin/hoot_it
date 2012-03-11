@@ -39,14 +39,14 @@ def staging():
 def production():
     utils.abort("Not yet implemented")
 
-def bootstrap():
-    """
-    Initialize the virtualenv environment with django
-    """
-    require('root', provided_by=('staging', 'production'))
-    run('mkdir -p %(root)s % env')
-    deploy()
-    update_requirements()
+#def bootstrap():
+    #"""
+    #Initialize the virtualenv environment with django
+    #"""
+    #require('root', provided_by=('staging', 'production'))
+    #run('mkdir -p %(root)s % env')
+    #deploy()
+    #update_requirements()
 
 def update_requirements():
     pass
@@ -68,3 +68,21 @@ def deploy():
         delete = False,
         extra_opts = extra_opts
     )
+
+### Local Methods
+
+def migrate():
+    """
+    Do all neccessary migrations
+    """
+    local("python manage.py migrate userena")
+    local("python manage.py migrate guardian")
+
+def setup():
+    """
+    Setup after wipe
+    """
+    local("python manage.py check_permissions")
+
+
+

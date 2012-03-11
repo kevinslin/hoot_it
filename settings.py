@@ -90,6 +90,12 @@ MIDDLEWARE_CLASSES = (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'userena.backends.UserenaAuthenticationBackend',
+    'guardian.backends.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 
 ROOT_URLCONF = 'hoot_it.urls'
 
@@ -110,8 +116,8 @@ INSTALLED_APPS = (
     # Inital
     'bond',
     'main',
-    #'simpleapps.accounts',
-    #'simpleapps.profiles',
+    'guardian',
+    'userena',
 
     #Development
     'south',

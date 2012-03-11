@@ -2,7 +2,7 @@ from main.models import *
 from django.contrib import admin
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'age')
+    pass
 
 
-admin.site.register(UserProfile, ProfileAdmin)
+#admin.site.register(UserProfile, ProfileAdmin)

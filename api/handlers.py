@@ -46,8 +46,6 @@ class TimerHandler(BaseHandler):
         """
         Create or update rating
         """
-        import pdb
-        pdb.set_trace()
         attrs = self.flatten_dict(request.POST)
         question = Question.objects.get(pk = attrs['question'])
         qstats, is_new  = QuestionStats.objects.get_or_create(question = question, profile = request.user.get_profile())

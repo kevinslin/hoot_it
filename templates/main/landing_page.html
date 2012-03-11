@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block body_header %}
+{% block content %}
 <!-- Main hero unit for a primary marketing message or call to action -->
 <div class="hero-unit">
 
@@ -9,12 +9,12 @@
             <h1>Welcome to Hoot.IT</h1>
         </div>
 
-        <div class="span5">
+        <div class="span8">
             <p>Homework made easy</p>
-            <img src="{{ STATIC_URL }}img/hootBanner.gif" width="290px"/>
+            <img style="width:360px; height:200px;" src="{{ STATIC_URL }}img/hoot_home_page.jpg" width="290px"/>
         </div>
-
-        <div class="span4">
+        <div class="span3">
+            <h2> Signup </h2>
             <form action="/accounts/signup/">
                 {{ form.as_table }}
             <br/>

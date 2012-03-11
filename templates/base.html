@@ -40,6 +40,13 @@
         .profile-box {
             display: inline;
         }
+        #signin input {
+            margin-right: 16px;
+        }
+        #custom_img {
+            height: 80px;
+            width: 160px;
+        }
 
     </style>
     {% endblock header_extra %}
@@ -61,7 +68,6 @@
               <li class="active"><a href="#">Home</a></li>
               <li><a href="#about">About</a></li>
               <li><a href="#contact">Contact</a></li>
-              <li><a href="/example">Example</a></li>
 
             </ul>
           </div><!--/.nav-collapse -->
@@ -73,9 +79,12 @@
 
     {% block body_header_pre %}
     <div class="subnav">
+
         <ul class="nav nav-pills row">
         {% if user.is_authenticated %}
-        <li class="custom-nav-text span4 offset4"><a> Welcome {{ user.username }} !</a> </li>
+        <!--<li class="span4"><img style="height:138; width:250;" src="{{ STATIC_URL }}/img/hoot_happy.jpg" / ></li>-->
+        <img id="custom_img" class="span4" src="{{ STATIC_URL }}img/hoot_happy-150.jpg"/>
+        <li class="custom-nav-text span4" style=""><a> Welcome {{ user.username }} !</a> </li>
             {% if user.get_profile.mugshot %}
             <li><img class="img-profile" src="{{ MEDIA_URL }}{{ user.get_profile.mugshot }}" /></li>
             {% endif %}
@@ -97,8 +106,9 @@
         {% else %}
             {% comment %} HACK {% endcomment %}
             {% if form_auth %}
-            <li>
-            <form action="/accounts/signin/" class="well form-inline" method="POST">
+            <li class="span12">
+
+            <form id="signin" action="/accounts/signin/" class="well form-inline" method="POST">
                 {% csrf_token %}
                 {{ form_auth.as_table }}
                 <input type="submit" value="Signin" />
@@ -149,7 +159,7 @@
 
       {% block footer %}
       <footer>
-        <p>&copy; Company 2012</p>
+        <p>&copy; Hoot It 2012</p>
       </footer>
       {% endblock %}
 

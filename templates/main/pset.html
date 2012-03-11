@@ -145,8 +145,10 @@
                         },
                         'type':'POST'
                     }).done( function(msg){
+                        alert("congrats, hoot complete");
                         console.log("success");
                     }).fail( function(msg){
+                        alert("congrats, hoot complete");
                         console.log("fail");
                     });
                 }
@@ -171,11 +173,13 @@
 <div class="container">
 	<div class="page-header">
 		<h1>
-          PSET 8 <small>Elec 241</small>
+            {{ problemset.name  }}
+            <small>{{ problemset.course }}</small>
         </h1>
     </div>
     <div class="row hoot-questions">
-		<div class="span5">
+
+		<div class="span6">
 			<h2> Questions </h2>
 
             <table class="table table-striped">
@@ -188,14 +192,14 @@
                 <tbody>
                 {% for q in questions %}
                     <tr>
-                        <td>
+                        <td class="span3">
                             <h3> {{ forloop.counter }}. {{ q.name }} </h3>
                             <div class="question_content">
                                 {{ q.details }}
                             </div>
                         </td>
 
-                        <td>
+                        <td class="span3">
                             <div id="question-{{ q.pk }}" class="collapse in">
 
                                 <!-- Countdown -->
@@ -228,20 +232,48 @@
             </table>
         </div>
 
-        </div><!--/span-->
-        <div class="span5">
+        <div class="span6">
+            {% if problemset.name == "Problem Set 1" %}
 			<h2> Stats </h2>
 			<div class="prettyprint linenums hero-unit">
-				<strong>Average Time:</strong> 10 minutes <br />
-				<strong>People finished:</strong> 20
+				<strong>Average Time for Problem Set:</strong> 2 hours  45 minutes <br />
+				<strong>Average Time for Question:</strong> 34 minutes <br />
+				<strong>People finished:</strong> 15 <br />
+				<strong>Hardest Question:</strong> 3<br />
+				<strong>Average Difficulty:</strong> 4<br />
+				<strong>Easiest Question:</strong> 1<br />
 			</div>
+
 			<h2> Activity </h2>
 			<div class="hero-unit">
-				<span class="student_name">Kevin Lin</span>
-				 and
-				<span class="student_name">Reed Jones</span>
-				are currently working on this son of a bitch.
+                <p> <a href="">Lin</a> is done with problem 4</p>
+                <p> <a href="/accounts/alice/"> Alice</a> finished problemset in 3 hours and 21 minutes </p>
+                <p> <a href="">Kota </a> finished question 4 in 10 minutes</p>
+                <p> <a href="">Sandra</a> rated question 5 a difficulty of 4</p>
+                <p> <a href="">Professor Hanan</a> posted a <a href="">note</a> on question 3</p>
+
 			</div>
+            {% else %}
+			<div class="prettyprint linenums hero-unit">
+				<strong>Average Time for Problem Set:</strong> 2 hours  45 minutes <br />
+				<strong>Average Time for Question:</strong> 34 minutes <br />
+				<strong>People finished:</strong> 15 <br />
+				<strong>Hardest Question:</strong> 3<br />
+				<strong>Average Difficulty:</strong> 4<br />
+				<strong>Easiest Question:</strong> 1<br />
+			</div>
+
+			<h2> Activity </h2>
+			<div class="hero-unit">
+                <p> <a href="">Lin</a> is done with problem 4</p>
+                <p> <a href="/accounts/alice/"> Alice</a> finished problemset in 3 hours and 21 minutes </p>
+                <p> <a href="">Kota </a> finished question 4 in 10 minutes</p>
+                <p> <a href="">Sandra</a> rated question 5 a difficulty of 4</p>
+                <p> <a href="">Professor Hanan</a> posted a <a href="">note</a> on question 3</p>
+
+			</div>
+            {% endif %}
+
         </div><!--/span-->
       </div><!--/row-->
     </div><!-- /container -->

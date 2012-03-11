@@ -41,8 +41,10 @@ def landing_page(request):
         context_instance = RequestContext(request))
 
 def pset(request, p_id):
+    problemset = ProblemSet.objects.get(pk = p_id)
     questions = ProblemSet.objects.get(pk = p_id).question_set.all()
     return render_to_response("main/pset.html", {
+        'problemset':problemset,
         'questions':questions
         },
         context_instance = RequestContext(request))

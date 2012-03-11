@@ -37,9 +37,12 @@ def landing_page(request):
         },
         context_instance = RequestContext(request))
 
-def pset(request):
-	return render_to_response("main/pset.html", {},
-					context_instance = RequestContext(request))
+def pset(request, p_id):
+    p = ProblemSet.objects.get(pk = p_id)
+    return render_to_response("main/pset.html", {
+        'problem_set':p
+        },
+        context_instance = RequestContext(request))
 
 def example(request):
     """

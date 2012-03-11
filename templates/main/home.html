@@ -12,7 +12,8 @@
         <div class="tab-content">
             <div class="tab-pane active" id="1">
                 {% for p in current %}
-                <div class="problem_set"> {{ p.name }} </div>
+                <!-- #TODO(hack) -->
+                <div class="problem_set"> <a href="/pset/{{ p.pk }}/">{{ p.name }}</a> </div>
                 <hr>
                 {% endfor %}
             </div>

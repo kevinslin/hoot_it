@@ -6,5 +6,5 @@ urlpatterns = patterns('main.views',
     url(r'^example$', 'example'),
     url(r'^home$', 'home'),
 
-    url(r'^pset', 'pset'),
+    url(r'^pset/(?P<p_id>\d+)/', 'pset'),
 )

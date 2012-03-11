@@ -13,6 +13,10 @@ def index(request):
     return render_to_response("main/index.html", {},
                     context_instance = RequestContext(request))
 
+def landing_page(request):
+    return render_to_response("main/landing_page.html", {},
+                    context_instance = RequestContext(request))
+
 def example(request):
     """
     Demonstration of various django commands

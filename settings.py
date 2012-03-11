@@ -50,6 +50,9 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, "assets"),
+    os.path.join(PROJECT_ROOT, "assets", "css"),
+    os.path.join(PROJECT_ROOT, "assets", "js"),
+    os.path.join(PROJECT_ROOT, "assets", "ico"),
     os.path.join(PROJECT_ROOT, "assets", "jquery"),
     os.path.join(PROJECT_ROOT, "assets", "core"),
     os.path.join(PROJECT_ROOT, "assets", "custom"),
@@ -89,7 +92,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 
-ROOT_URLCONF = 'prototype.urls'
+ROOT_URLCONF = 'hoot_it.urls'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -108,6 +111,8 @@ INSTALLED_APPS = (
     # Inital
     'bond',
     'main',
+    'simpleapps.accounts',
+    'simpleapps.profiles',
 
     # Optional
     'navbar',

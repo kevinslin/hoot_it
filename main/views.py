@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from userena.forms import SignupForm
+from userena.forms import SignupForm, AuthenticationForm
 from models import *
 
 
@@ -35,7 +35,8 @@ def landing_page(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect("/home/")
     return render_to_response("main/landing_page.html", {
-        'form':SignupForm()
+        'form':SignupForm(),
+        'form_auth': AuthenticationForm()
         },
         context_instance = RequestContext(request))
 

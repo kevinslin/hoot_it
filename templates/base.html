@@ -16,6 +16,7 @@
         padding-top: 60px;
         padding-bottom: 40px;
       }
+
     </style>
     <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
 
@@ -32,11 +33,19 @@
 
     {% render_block "css" %}
     {% block header_extra %}
+    <style>
+        .custom-nav-text {
+            color: white;
+        }
+        .profile-box {
+            display: inline;
+        }
+
+    </style>
     {% endblock header_extra %}
   </head>
 
   <body>
-    {% render_block "js" %}
 
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
@@ -53,6 +62,7 @@
               <li><a href="#about">About</a></li>
               <li><a href="#contact">Contact</a></li>
               <li><a href="/example">Example</a></li>
+
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -61,9 +71,52 @@
 
     <div class="container">
 
+    {% block body_header_pre %}
+    <div class="subnav">
+        <ul class="nav nav-pills row">
+        {% if user.is_authenticated %}
+        <li class="custom-nav-text span4 offset4"><a> Welcome {{ user.username }} !</a> </li>
+            {% if user.get_profile.mugshot %}
+            <li><img class="img-profile" src="{{ MEDIA_URL }}{{ user.get_profile.mugshot }}" /></li>
+            {% endif %}
 
-    {% block body_header %}
-      {% endblock %}
+        <li class="span3">
+            <div class="btn-group closed">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Action <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url userena_profile_detail user.username %}">View profile &raquo;</a></li>
+                    <li><a href="{% url userena_profile_edit user.username %}"> Edit details  &raquo;</a></li>
+                    <li><a href="{% url userena_password_change user.username %}">Change password  &raquo;</a></li>
+                    <li><a href="{% url userena_email_change user.username %}">Change email  &raquo;</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/accounts/signout/">Signout</a></li>
+                </ul>
+            </div>
+        </li>
+
+        {% else %}
+            {% comment %} HACK {% endcomment %}
+            {% if form_auth %}
+            <li>
+            <form action="/accounts/signin/" class="well form-inline" method="POST">
+                {% csrf_token %}
+                {{ form_auth.as_table }}
+                <input type="submit" value="Signin" />
+                <input type="hidden" name="next" value="/home/" />
+            </form>
+            </li>
+            {% endif %}
+
+        {% endif %}
+
+        </ul>
+    </div>
+    <hr/>
+  {% endblock %}
+
+  {% block body_header %}
+  {% endblock %}
+
       <!--[> Main hero unit for a primary marketing message or call to action <]-->
       <!--<div class="hero-unit">-->
         <!--<h1>Hello, world!</h1>-->
@@ -118,6 +171,7 @@
     <script src="{{ STATIC_URL }}js/bootstrap-collapse.js"></script>
     <script src="{{ STATIC_URL }}js/bootstrap-carousel.js"></script>
     <script src="{{ STATIC_URL }}js/bootstrap-typeahead.js"></script>
+    {% render_block "js" %}
 
   </body>
 </html>

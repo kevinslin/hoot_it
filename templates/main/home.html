@@ -1,6 +1,9 @@
 {% extends "base.html" %}
+{% load sekizai_tags %}
+
 
 {% block content %}
+
 
 <div class="row">
     <div class="tabbable span6" style="margin-bottom: 9px;">
@@ -11,11 +14,24 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="1">
-                {% for p in current %}
-                <!-- #TODO(hack) -->
-                <div class="problem_set"> <a href="/pset/{{ p.pk }}/">{{ p.name }}</a> </div>
-                <hr>
-                {% endfor %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Course </th>
+                            <th>Problem Set</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in current %}
+                        <!-- #TODO(hack) -->
+                        <tr>
+                            <td><a href="/pset/{{ p.pk }}/">{{ p.course }}</a> </td>
+                            <td> <a href="/pset/{{ p.pk }}/">{{ p.name }}</a> </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
             </div>
             <div class="tab-pane" id="2">
                 <p>Howdy, I'm in Section 2.</p>

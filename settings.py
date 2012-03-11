@@ -116,8 +116,11 @@ INSTALLED_APPS = (
     # Inital
     'bond',
     'main',
+
     'guardian',
     'userena',
+    'sorl.thumbnail',
+    'easy_thumbnails',
 
     #Development
     'south',

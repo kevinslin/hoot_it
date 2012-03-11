@@ -23,79 +23,83 @@ def _get_user_for_request(request):
         return None
     return user
 
-class WorkoutForm(forms.ModelForm):
-    class Meta:
-        model = Workout
-        exclude = ("user",)
-
-class WorkoutHandler(BaseHandler):
-    #CRUD
+class QuestionStatsHandler(BaseHandler):
     allowed_methods = ('POST', 'GET', 'PUT', 'DELETE')
-    model = Workout
-    #anonymous = AnonymousFooHandler
-
-    @classmethod
-    def content_size(self, foo):
-        #TODO(hack)
-        return 42;
-
-    @validate(WorkoutForm)
-    def create(self, request):
-        """
-        Create a new workout object and return workout instance
-        """
-        sl.debug("creating new workout...")
-        if not self.has_model():
-            return rc.NOT_IMPLEMENTED
-
-        attrs = self.flatten_dict(request.form.cleaned_data)
-        attrs.update(self.flatten_dict(request.POST))
-        user = _get_user_for_request(request)
-        if not user: return rc.BAD_REQUEST
-        attrs['user'] = user
-        try:
-            inst = self.model.objects.get(**attrs)
-            return rc.DUPLICATE_ENTRY
-        except self.model.DoesNotExist:
-            inst = self.model(**attrs)
-            inst.save()
-            return inst
-        #var_char = request.POST['var_char']
-        #var_int = request.POST['var_int']
-        #em = self.model(var_char = var_char, var_int = var_int)
-        #em.save()
-        #return rc.CREATED
-
-    def read(self, request, username):
-        """
-        Return workouts for given user
-        @param:
-        username
-        """
-        try:
-            user = User.objects.get(username = username)
-        except Exception:
-            return rc.BAD_REQUEST
-        return Workout.objects.all().filter(user__exact = user).filter(user__exact = user)
-
-    @throttle(5, 10*60) # 5 times in 10 minutes
-    def update(self, request, pk):
-        pass
-        #foo = Foo.objects.get(pk = pk)
-        #foo.var_char = request.PUT.get('var_char')
-        #foo.save()
-        #return foo
-
-    def delete(self, request):
-        pass
 
 
-class ArbitraryDataHandler(BaseHandler):
-    """
-    All other requests
-    """
-    methods_allowed = ('GET',)
+#class WorkoutForm(forms.ModelForm):
+    #class Meta:
+        #model = Workout
+        #exclude = ("user",)
 
-    def read(self, request):
-        return Workout.objects.all()
+#class WorkoutHandler(BaseHandler):
+    ##CRUD
+    #allowed_methods = ('POST', 'GET', 'PUT', 'DELETE')
+    #model = Workout
+    ##anonymous = AnonymousFooHandler
+
+    #@classmethod
+    #def content_size(self, foo):
+        ##TODO(hack)
+        #return 42;
+
+    #@validate(WorkoutForm)
+    #def create(self, request):
+        #"""
+        #Create a new workout object and return workout instance
+        #"""
+        #sl.debug("creating new workout...")
+        #if not self.has_model():
+            #return rc.NOT_IMPLEMENTED
+
+        #attrs = self.flatten_dict(request.form.cleaned_data)
+        #attrs.update(self.flatten_dict(request.POST))
+        #user = _get_user_for_request(request)
+        #if not user: return rc.BAD_REQUEST
+        #attrs['user'] = user
+        #try:
+            #inst = self.model.objects.get(**attrs)
+            #return rc.DUPLICATE_ENTRY
+        #except self.model.DoesNotExist:
+            #inst = self.model(**attrs)
+            #inst.save()
+            #return inst
+        ##var_char = request.POST['var_char']
+        ##var_int = request.POST['var_int']
+        ##em = self.model(var_char = var_char, var_int = var_int)
+        ##em.save()
+        ##return rc.CREATED
+
+    #def read(self, request, username):
+        #"""
+        #Return workouts for given user
+        #@param:
+        #username
+        #"""
+        #try:
+            #user = User.objects.get(username = username)
+        #except Exception:
+            #return rc.BAD_REQUEST
+        #return Workout.objects.all().filter(user__exact = user).filter(user__exact = user)
+
+    #@throttle(5, 10*60) # 5 times in 10 minutes
+    #def update(self, request, pk):
+        #pass
+        ##foo = Foo.objects.get(pk = pk)
+        ##foo.var_char = request.PUT.get('var_char')
+        ##foo.save()
+        ##return foo
+
+    #def delete(self, request):
+        #pass
+
+
+#class ArbitraryDataHandler(BaseHandler):
+    #"""
+    #All other requests
+    #"""
+    #methods_allowed = ('GET',)
+
+    #def read(self, request):
+        #return Workout.objects.all()
 

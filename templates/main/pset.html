@@ -1,48 +1,191 @@
 {% extends "base.html" %}
 
-{% block body_header %}
-{% endblock %}
+{% load sekizai_tags %}
+
 {% block content %}
+
+{% addtoblock "js" %}
+// Csrf ajax token magic
+<script style="text/javascript">
+            jQuery(document).ajaxSend(function(event, xhr, settings) {
+                function getCookie(name) {
+                    var cookieValue = null;
+                    if (document.cookie && document.cookie != '') {
+                        var cookies = document.cookie.split(';');
+                        for (var i = 0; i < cookies.length; i++) {
+                            var cookie = jQuery.trim(cookies[i]);
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+                function sameOrigin(url) {
+                    // url could be relative or scheme relative or absolute
+                    var host = document.location.host; // host + port
+                    var protocol = document.location.protocol;
+                    var sr_origin = '//' + host;
+                    var origin = protocol + sr_origin;
+                    // Allow absolute or scheme relative URLs to same origin
+                    return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                        (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                        // or any other URL that isn't scheme relative or absolute i.e relative.
+                        !(/^(\/\/|http:|https:).*/.test(url));
+                }
+                function safeMethod(method) {
+                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                }
+
+                if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
+            });
+</script>
+<!-- Feedback plugins -->
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.countdown.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.rating.js"></script>
+
+<script type="text/javascript">
+    var liftoffTime = new Date();
+    $(function(){
+        $('#hoot-timer1').countdown({
+            since: liftoffTime,
+            format: 'HMS'
+            //onTick: showPauseTime
+        });
+
+        $('.btn-hoot-timer1').toggle(function() {
+            $(this).text('Resume');
+            $('#btn-hoot-timer1').countdown('pause');
+            },
+            function() {
+                $(this).text('Pause');
+                $('#btn-hoot-timer1').countdown('resume');
+            }
+        );
+
+        function showPauseTime(periods) {
+            $('#showPauseTime').text(periods[4] + ':' + twoDigits(periods[5]) +
+            ':' + twoDigits(periods[6]));
+        }
+
+        $( 'body' ).find( '.star-rating' ).each( function(){
+            $(this).click(
+                var star_container = $(this).parent().children();
+                var rating = t1.index( $(this) ); // star rating
+                var url_send_rating = "/api/rating";
+                var question_div = $($(this).parentsUntil("div[id|=question]").parent()[0]);
+                var question_pk = question_div.attr("id").split("-")[1];
+                $.ajax( url_send_rating, {
+                    'async': true,
+                    'data': {
+                        'user': {{ request.user }},
+                        'question': question_pk,
+                        'rating': rating
+                    },
+                    'type':'POST'
+                }).done( function(msg){
+                    alert('update success');
+                }).fail( function(msg){
+                    alert("update fail');
+                });
+                function(){
+                    alert("bond");
+                }
+            );
+        });
+        /*
+        var update_rating =
+        $.ajax( url_cycle_create, {
+            'async':false,
+            'data':{
+                'cycle_type': cycle_type.val(),
+                'name': name.val(),
+                'start': start.val(),
+                'stop': stop.val()
+            },
+            'type': 'POST'
+        }).done( function (msg){
+            errors = false;
+            console.log('data saved');
+            //#TODO(prettify)
+        }).fail( function (msg){
+            console.log('query has failed');
+            errors = true;
+        });
+        */
+    });
+</script>
+
+{% endaddtoblock %}
+
+{% addtoblock "css" %}
+<link href="{{ STATIC_URL }}css/jquery.countdown.css" rel="stylesheet">
+<link href="{{ STATIC_URL }}css/jquery.rating.css" rel="stylesheet">
+<style>
+.hoot-questions {
+    height:100%;
+}
+</style>
+{% endaddtoblock %}
+
 <div class="container">
 	<div class="page-header">
 		<h1>
           PSET 8 <small>Elec 241</small>
         </h1>
     </div>
-    <div class="row">
+    <div class="row hoot-questions">
 		<div class="span5">
 			<h2> Questions </h2>
-			<div class="breadcrumb">
-                {% for q in questions %}
-                <h3> {{ forloop.counter }}. {{ q.name }} </h3>
-				<button class="btn" data-toggle="collapse" data-target="#question1">
-					Show/Hide
-				</button>
 
-                <div id="question{{ forloop.counter }}" class="collapse in">
-					<div id="diffmeter"></div>
-					<div class="question_content">
-                        {{ q.details }}
-					</div>
-					<a class="btn btn-success" href="#">Hoot IT!</a><a class="btn btn-danger" href="#">Work It</a>
-				</div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for q in questions %}
+                    <tr>
+                            <td>
+                        <h3> {{ forloop.counter }}. {{ q.name }} </h3>
+                        <div class="question_content">
+                            {{ q.details }}
+                        </div>
+                        </td>
+
+                        <td>
+
+                        <div id="hoot-timer{{ q.pk }}" class="countdown hasCountdown" style="height:20px;"></div>
+                        <div id="question-{{ q.pk }}" class="collapse in">
+                            <div id="diffmeter">
+
+                                <form>
+                                    <input href="javascript: alert('bond')" name="star1" type="radio" class="star" onclick="send_data()"/>
+                                    <input name="star1" type="radio" class="star"/>
+                                    <input name="star1" type="radio" class="star" checked="checked" />
+                                    <input name="star1" type="radio" class="star"/>
+                                    <input name="star1" type="radio" class="star"/>
+                                    <input type="hidden" name="question-pk" value="{{ q.pk }}" />
+                                </form>
+
+                            </div>
+                            <a class="btn btn-success btn-hoot-timer{{ q.pk }}"> Start </a>
+                            <a class="btn btn-success btn-hoot-it"> Hoot It!</a>
+
+                        </div>
+                        </td>
+                    </tr>
 
                 {% endfor %}
-			</div>
-
-				<!--<h3>1. Question 1.2 in Book-->
-				<!--<button class="btn" data-toggle="collapse" data-target="#question1">-->
-					<!--Show/Hide-->
-				<!--</button>-->
-				<!--</h3>-->
-				<!--<div id="question1" class="collapse in">-->
-					<!--<div id="diffmeter"></div>-->
-					<!--<div class="question_content">-->
-						<!--Who was the capital of Albania?-->
-					<!--</div>-->
-					<!--<a class="btn btn-success" href="#">Hoot IT!</a><a class="btn btn-danger" href="#">Work It</a>-->
-				<!--</div>-->
-			<!--</div>-->
+                </tbody>
+            </table>
+        </div>
 
         </div><!--/span-->
         <div class="span5">

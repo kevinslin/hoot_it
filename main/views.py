@@ -32,15 +32,17 @@ def home(request):
         context_instance = RequestContext(request))
 
 def landing_page(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect("/home/")
     return render_to_response("main/landing_page.html", {
         'form':SignupForm()
         },
         context_instance = RequestContext(request))
 
 def pset(request, p_id):
-    p = ProblemSet.objects.get(pk = p_id)
+    questions = ProblemSet.objects.get(pk = p_id).question_set.all()
     return render_to_response("main/pset.html", {
-        'problem_set':p
+        'questions':questions
         },
         context_instance = RequestContext(request))
 

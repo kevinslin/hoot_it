@@ -4,39 +4,60 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-      <div class="page-header">
-        <h1>
+	<div class="page-header">
+		<h1>
           PSET 8 <small>Elec 241</small>
         </h1>
-      </div>
-      <div class="row">
-        <div class="span6">
-          <h2>
-            Questions
-          </h2>
-          <h3>1. Question 1.2 in Book</h3>
-          <div id="diffmeter"></div>
-          <pre>
-<a class="btn btn-success" href="#">Hoot IT!</a><a class="btn btn-danger" href=
-"#">Work It</a>
-</pre>
-</pre>
+    </div>
+    <div class="row">
+		<div class="span5">
+			<h2> Questions </h2>
+			<div class="breadcrumb">
+                {% for q in questions %}
+                <h3> {{ forloop.counter }}. {{ q.name }} </h3>
+				<button class="btn" data-toggle="collapse" data-target="#question1">
+					Show/Hide
+				</button>
+
+                <div id="question{{ forloop.counter }}" class="collapse in">
+					<div id="diffmeter"></div>
+					<div class="question_content">
+                        {{ q.details }}
+					</div>
+					<a class="btn btn-success" href="#">Hoot IT!</a><a class="btn btn-danger" href="#">Work It</a>
+				</div>
+
+                {% endfor %}
+			</div>
+
+				<!--<h3>1. Question 1.2 in Book-->
+				<!--<button class="btn" data-toggle="collapse" data-target="#question1">-->
+					<!--Show/Hide-->
+				<!--</button>-->
+				<!--</h3>-->
+				<!--<div id="question1" class="collapse in">-->
+					<!--<div id="diffmeter"></div>-->
+					<!--<div class="question_content">-->
+						<!--Who was the capital of Albania?-->
+					<!--</div>-->
+					<!--<a class="btn btn-success" href="#">Hoot IT!</a><a class="btn btn-danger" href="#">Work It</a>-->
+				<!--</div>-->
+			<!--</div>-->
+
         </div><!--/span-->
-        <div class="span6">
-          <h2>
-            Stats
-          </h2>
-          <pre class="prettyprint linenums">
-<strong>Average Time:</strong> 10 minutes
-<strong>People finished:</strong> 20
-
-</pre>
-          <h2>
-            Activity
-          </h2>
-          <pre>
-
-</pre>
+        <div class="span5">
+			<h2> Stats </h2>
+			<div class="prettyprint linenums hero-unit">
+				<strong>Average Time:</strong> 10 minutes <br />
+				<strong>People finished:</strong> 20
+			</div>
+			<h2> Activity </h2>
+			<div class="hero-unit">
+				<span class="student_name">Kevin Lin</span>
+				 and
+				<span class="student_name">Reed Jones</span>
+				are currently working on this son of a bitch.
+			</div>
         </div><!--/span-->
       </div><!--/row-->
     </div><!-- /container -->

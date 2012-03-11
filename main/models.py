@@ -4,21 +4,6 @@ import datetime
 
 from userena.models import UserenaBaseProfile
 
-class Question(models.Model):
-    def __unicode__(self):
-        return self.name
-    name = models.CharField(max_length=100)
-    details = models.TextField()
-
-class ProblemSet(models.Model):
-    """
-    A problem set
-    """
-    def __unicode__(self):
-        return self.name
-    name = models.CharField(max_length=100)
-    question = models.ForeignKey(Question)
-
 class Course(models.Model):
     """
     A course
@@ -28,18 +13,43 @@ class Course(models.Model):
 
     name = models.CharField(max_length=100)
     course_id = models.IntegerField()
-    problem_set = models.ForeignKey(ProblemSet)
+
+
+class ProblemSet(models.Model):
+    """
+    A problem set
+    """
+    def __unicode__(self):
+        return self.name
+    name = models.CharField(max_length=100)
+    course = models.ForeignKey(Course, blank=True, null=True)
+    due_date = models.DateTimeField()
+
+    def current():
+        """
+        If due date is in future
+        """
+        today = datetime.datetime.today()
+        return self.due_date > today
+
+
+class Question(models.Model):
+    def __unicode__(self):
+        return self.name
+    name = models.CharField(max_length=100)
+    details = models.TextField()
+    problem_set = models.ForeignKey(ProblemSet , blank=True, null=True)
 
 class UserProfile(UserenaBaseProfile):
     user = models.OneToOneField(User, unique=True)
-    course = models.ForeignKey(Course, null = True, blank = False)
+    course = models.ManyToManyField(Course, null = True, blank = False)
 
 class QuestionStats(models.Model):
     rating = models.IntegerField()
     start_time = models.DateTimeField()
     stop_time = models.DateTimeField()
-    question = models.ForeignKey(Question)
-    profile = models.ForeignKey(UserProfile)
+    question = models.ForeignKey(Question,null=True,blank=False)
+    profile = models.ForeignKey(UserProfile,null=True,blank=False)
 
 
 

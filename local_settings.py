@@ -74,7 +74,7 @@ LOGGING = {
 #guardian
 ANONYMOUS_USER_ID = -1
 
-LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
+LOGIN_REDIRECT_URL = '/home/'
 LOGIN_URL = '/accounts/signin/'
 LOGOUT_URL = '/accounts/signout/'
 

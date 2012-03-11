@@ -4,6 +4,7 @@ urlpatterns = patterns('main.views',
     url(r'^$', 'landing_page'),
     url(r'^index', 'index'),
     url(r'^example$', 'example'),
-    
+    url(r'^home$', 'home'),
+
     url(r'^pset', 'pset'),
 )

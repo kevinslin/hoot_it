@@ -17,6 +17,10 @@ def landing_page(request):
     return render_to_response("main/landing_page.html", {},
                     context_instance = RequestContext(request))
 
+def pset(request):
+	return render_to_response("main/pset.html", {},
+					context_instance = RequestContext(request))
+					
 def example(request):
     """
     Demonstration of various django commands

@@ -1,1 +1,0 @@
-var BOND="bond here";
